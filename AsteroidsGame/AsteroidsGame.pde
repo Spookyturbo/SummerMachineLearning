@@ -1,3 +1,9 @@
+/*
+  The backpropagation boolean at the top of this page set false to use the original method and set true to use the backpropagation
+  If you use the backpropagation you can check where the train() method is being used in the Player file in the think() method
+  If you enable both backpropagation and humanTraining, when you activate humanplayer mode by pressing p, once you die, the machine learns
+  from your inputs but it does not work very well so I suggest leaving humanPlayer alone as false.
+*/
 Player humanPlayer;//the player which the user (you) controls
 Population pop; 
 int speed = 100; //Calls of draw() per second
