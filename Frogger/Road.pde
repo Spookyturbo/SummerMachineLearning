@@ -12,6 +12,7 @@ class Road {
     this.frog = frog;
     this.rows = new ArrayList<Car[]>();
     initializeCars(rows, carsPerRow);
+    frog.setRoad(this);
   }
 
   void initializeCars(int rows, int carsPerRow) {
@@ -35,20 +36,16 @@ class Road {
         car.draw();
       }
     }
-    if (checkCollisions() || frog.position.y > rowHeight * (rows.size() + 1)) {
+    if (checkCollisions(frog.position, frog.size) || frog.position.y >= rowHeight * (rows.size() + 1)) {
       resetGame();
     }
   }
 
-  boolean checkCollisions() {
+  boolean checkCollisions(PVector position, PVector size) {
     for (Car[] cars : rows) {
       for (Car car : cars) {
-        float leftXBoundary = frog.position.x - frog.size.x / 2;
-        float rightXBoundary = frog.position.x + frog.size.x / 2;
-        if ((leftXBoundary >= car.position.x && leftXBoundary <= car.position.x + car.size.x) || (rightXBoundary >= car.position.x && rightXBoundary <= car.position.x + car.size.x)) {
-          if (frog.position.y >= car.position.y && frog.position.y <= car.position.y + car.size.y) {
-            return true;
-          }
+        if (car.checkCollision(position, size)) {
+          return true;
         }
       }
     }

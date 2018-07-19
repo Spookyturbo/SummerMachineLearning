@@ -11,9 +11,8 @@ class Car {
   public Car(float x, float y, int h, boolean directionRight) {
     if (directionRight) {
       img = loadImage("Car.png");
-    }
-    else {
-       img = loadImage("CarReversed.png"); 
+    } else {
+      img = loadImage("CarReversed.png");
     }
     position = new PVector(x, y);
     this.directionRight = directionRight;
@@ -45,5 +44,27 @@ class Car {
     } else if (w < minPosition) {
       position.x = maxPosition - size.x;
     }
+  }
+
+  boolean checkCollision(PVector position, PVector size) {
+    float carLeftEdge = this.position.x;
+    float carRightEdge = this.position.x + this.size.x;
+    float carTop = this.position.y;
+    float carBottom = this.position.y + this.size.y;
+    float objectLeftEdge = position.x;
+    float objectRightEdge = position.x + size.x;
+    float objectTop = position.y;
+    float objectBottom = position.y + size.y;
+
+
+    if (carLeftEdge < objectRightEdge && carRightEdge > objectLeftEdge && carTop < objectBottom && carBottom > objectTop) {
+      return true;
+    }
+
+    return false;
+  }
+
+  boolean contains(PVector point) {
+    return point.x > position.x && point.x < position.x + size.x && point.y > position.y && point.y < position.y + size.y;
   }
 }
