@@ -34,10 +34,10 @@ class Car {
 
   public void update() {
     position.x += (directionRight) ? speed : speed * -1;
-    clampPosition(position.x, minPosition, maxPosition);
+    wrapPosition(position.x, minPosition, maxPosition);
   }
 
-  void clampPosition(float w, float minPosition, float maxPosition) {
+  void wrapPosition(float w, float minPosition, float maxPosition) {
     //Topleft corner of car is given position, so subtract the width of the car
     if (w > maxPosition - size.x) {
       position.x = minPosition;
@@ -46,6 +46,7 @@ class Car {
     }
   }
 
+  //Uses the Axis Aligned Bounding Box collision detection method
   boolean checkCollision(PVector position, PVector size) {
     float carLeftEdge = this.position.x;
     float carRightEdge = this.position.x + this.size.x;
