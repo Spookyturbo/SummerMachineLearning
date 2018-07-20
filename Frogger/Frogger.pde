@@ -1,13 +1,14 @@
 //Road road;
 Population population;
 boolean playerControlled = false;
+int ticksPerUpdate = 5;
 Frog playerFrog;
 
 void setup() {
   size(600, 800);
   background(51);
   loadAllImages();
-  population = new Population(10);
+  population = new Population(1000);
   playerFrog = population.frogs[0];
 }
 

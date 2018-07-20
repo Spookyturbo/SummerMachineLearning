@@ -87,11 +87,11 @@ class Frog {
     vision[3] = (road.checkCollisions(tmpPosition, size)) ? 1 : 0;
   }
 
-  long previousTime = 0;
+  long lastTick = -10;
   public void think() {
     //Makes it not able to move as fast as it wants
-    if (millis() - previousTime > 50) {
-      previousTime = millis();
+    if (road.gameTick - lastTick >= ticksPerUpdate) {
+      lastTick = road.gameTick;
       float[] inputs = getInputs();
 
       //up, right, down, left

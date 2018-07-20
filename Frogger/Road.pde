@@ -1,4 +1,5 @@
 class Road {
+  public int gameTick = 0;
   public int rowHeight = 50;
   ArrayList<Car[]> rows;
 
@@ -42,6 +43,7 @@ class Road {
   }
 
   public void update() {
+    gameTick++;
     for (Car[] cars : rows) {
       for (Car car : cars) {
         car.update();
