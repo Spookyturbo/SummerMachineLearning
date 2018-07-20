@@ -1,21 +1,30 @@
-Road road;
-NeuralNet brain = new NeuralNet(4, 10, 4);
-boolean playerControlled = false;
+//Road road;
+Population population;
+boolean playerControlled = true;
 Frog playerFrog;
 
 void setup() {
   size(600, 800);
   background(51);
-  road = new Road(height/50 - 2, 2);
-  playerFrog = road.getFrog();
+  population = new Population(40);
+  //road = new Road(height/50 - 2, 2);
+  playerFrog = population.frogs[0];
 }
 
 void draw() {
   background(51);
   if (!playerControlled) {
-    road.updateAI();
+    if (population.isAlive()) {
+      population.updateAlive();
+    }
   } else {
-    road.update();
+    if (playerFrog.alive) {
+      playerFrog.road.update();
+      playerFrog.road.show();
+    }
+    else {
+       playerFrog.road.resetGame(); 
+    }
   }
 }
 

@@ -8,6 +8,8 @@ class Frog {
   //Ai Reqs
   NeuralNet brain;
   float[] vision = new float[4]; //up, right, down, left
+  boolean alive = true;
+  float fitness;
 
   //Loading the frog
   PImage img;
@@ -25,7 +27,7 @@ class Frog {
 
   public Frog(int scale) {
     brain = new NeuralNet(4, 10, 5);
-    
+
     upFrog = loadImage("UpFrog.png");
     leftFrog = loadImage("LeftFrog.png");
     downFrog = loadImage("DownFrog.png");
@@ -67,12 +69,6 @@ class Frog {
   public void moveDown() {
     img = downFrog;
     position.y -= size.x;
-  }
-
-  public void reset() {
-    score = 0;
-    position = spawnPosition.copy();
-    img = upFrog;
   }
 
   //only checks for collision when simulating the movements up, right, down, and left
@@ -148,5 +144,22 @@ class Frog {
     translate(0, -height);
     image(img, position.x, position.y, size.x, size.y);
     popMatrix();
+  }
+
+  public void calculateFitness() {
+    fitness = score;
+  }
+
+  public void setAlive(boolean value) {
+    alive = value;
+  }
+
+  public void reset() {
+    score = 0;
+    fitness = 0;
+    maxYPosition = spawnPosition.y;
+    position = spawnPosition.copy();
+    img = upFrog;
+    alive = true;
   }
 }
