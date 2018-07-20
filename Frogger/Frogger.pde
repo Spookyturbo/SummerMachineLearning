@@ -1,6 +1,6 @@
 //Road road;
 Population population;
-boolean playerControlled = true;
+boolean playerControlled = false;
 Frog playerFrog;
 
 void setup() {
@@ -18,12 +18,13 @@ void draw() {
       population.updateAlive();
     }
   } else {
+    playerFrog.road.update();
+    playerFrog.road.show();
     if (playerFrog.alive) {
-      playerFrog.road.update();
-      playerFrog.road.show();
-    }
-    else {
-       playerFrog.road.resetGame(); 
+      playerFrog.update();
+      playerFrog.show();
+    } else {
+      playerFrog.reset();
     }
   }
 }

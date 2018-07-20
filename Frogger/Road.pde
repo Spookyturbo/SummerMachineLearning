@@ -1,7 +1,6 @@
 class Road {
   public int rowHeight = 50;
   ArrayList<Car[]> rows;
-  public Frog frog;
 
   //Used for creating copies without creating more cars
   public Road(ArrayList<Car[]> rows) {
@@ -9,9 +8,6 @@ class Road {
   }
 
   public Road(int rows, int carsPerRow) {
-    frog = new Frog(rowHeight);
-    frog.setRoad(this);
-
     initializeCars(rows, carsPerRow);
   }
 
@@ -38,18 +34,11 @@ class Road {
   }
 
   public void show() {
-    rectMode(CORNER);
-    fill(255, 0, 0);
-    textSize(32);
-    text(frog.score, 0, 32);
-
     for (Car[] cars : rows) {
       for (Car car : cars) {
         car.draw();
       }
     }
-
-    frog.draw();
   }
 
   public void update() {
@@ -58,17 +47,6 @@ class Road {
         car.update();
       }
     }
-
-    //Hit a car or reached the end
-    if (checkCollisions(frog.position, frog.size) || frog.position.y >= rowHeight * (rows.size() + 1)) {
-      endGame();
-    }
-  }
-
-  public void updateAI() {
-    frog.look();
-    frog.think();
-    update();
   }
 
   boolean checkCollisions(PVector position, PVector size) {
@@ -82,15 +60,6 @@ class Road {
     return false;
   }
 
-  void endGame() {
-    frog.setAlive(false);
-  }
-
-  void resetGame() {
-    frog.reset();
-    initializeCars(rows.size(), rows.get(0).length);
-  }
-
   float wrap(float v, float min, float max) {
     if (v > max) {
       return min + (v - max);
@@ -101,12 +70,8 @@ class Road {
     return v;
   }
 
-  public Frog getFrog() {
-    return frog;
-  }
-  
   public Road copy() {
-      Road road = new Road(rows);
-      return road;
+    Road road = new Road(rows);
+    return road;
   }
 }

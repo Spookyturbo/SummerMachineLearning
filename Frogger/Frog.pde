@@ -25,7 +25,8 @@ class Frog {
   //Reset Information
   PVector spawnPosition;
 
-  public Frog(int scale) {
+  public Frog(Road road) {
+    this.road = road;
     brain = new NeuralNet(4, 10, 5);
 
     upFrog = loadImage("UpFrog.png");
@@ -34,16 +35,24 @@ class Frog {
     rightFrog = loadImage("RightFrog.png");
     img = upFrog;
 
-    spawnPosition = new PVector((width / 2) - (scale / 2), 0);
+    spawnPosition = new PVector((width / 2) - (road.rowHeight / 2), 0);
     this.position = spawnPosition.copy();
-    size = new PVector(scale, scale);
+    size = new PVector(road.rowHeight, road.rowHeight);
 
     //For determining if visiting a new row for the first time
     maxYPosition = position.y;
   }
 
-  public void setRoad(Road road) {
-    this.road = road;
+  public void update() {
+    if (road.checkCollisions(position, size) || position.y > road.rowHeight * road.rows.size()) {
+      alive = false;
+    }
+  }
+
+  public void updateAI() {
+    look();
+    think();
+    update();
   }
 
   public void moveUp() {
@@ -135,9 +144,10 @@ class Frog {
     return vision;
   }
 
-  public void draw() {
-    textSize(50);
-    text("" + score, 0, 0, 100, 50);
+  public void show() {
+    fill(255, 255, 255);
+    textSize(32);
+    text(score, 0, 32);
     imageMode(CORNER);
     pushMatrix();
     scale(1, -1);

@@ -1,17 +1,15 @@
 class Population {
 
+  Road road;
   Frog[] frogs;
   Frog bestFrog;
 
   public Population(int populationSize) {
+    road = new Road(height/50 - 2, 2);
     frogs = new Frog[populationSize];
-    
-    Frog frog = new Road(height/50 - 2, 2).getFrog();
-    frogs[0] = frog;
-    for (int i = 1; i < populationSize; i++) {
-      Road road = frog.road.copy();
-      road.frog = new Frog(road.rowHeight);
-      frogs[i] = frog;
+
+    for (int i = 0; i < populationSize; i++) {
+      frogs[i] = new Frog(road);
     }
 
     //Initiliazed to any frog
@@ -19,11 +17,18 @@ class Population {
   }
 
   public void updateAlive() {
+    road.update();
     for (Frog frog : frogs) {
-      frog.road.updateAI();
+      if (frog.alive) {
+        frog.updateAI();
+        frog.show();
+      }
     }
 
-    bestFrog.road.show();
+    road.show();
+    if (bestFrog.alive) {
+      bestFrog.show();
+    }
   }
 
   public void calculateFitness() {
