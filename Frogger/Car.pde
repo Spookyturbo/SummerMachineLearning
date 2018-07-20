@@ -10,9 +10,9 @@ class Car {
 
   public Car(float x, float y, int h, boolean directionRight) {
     if (directionRight) {
-      img = loadImage("Car.png");
+      img = car;
     } else {
-      img = loadImage("CarReversed.png");
+      img = reversedCar;
     }
     position = new PVector(x, y);
     this.directionRight = directionRight;

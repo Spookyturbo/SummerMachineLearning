@@ -6,8 +6,8 @@ Frog playerFrog;
 void setup() {
   size(600, 800);
   background(51);
-  population = new Population(40);
-  //road = new Road(height/50 - 2, 2);
+  loadAllImages();
+  population = new Population(10);
   playerFrog = population.frogs[0];
 }
 

@@ -10,13 +10,8 @@ class Frog {
   float[] vision = new float[4]; //up, right, down, left
   boolean alive = true;
   float fitness;
-
-  //Loading the frog
+  
   PImage img;
-  PImage rightFrog;
-  PImage leftFrog;
-  PImage upFrog;
-  PImage downFrog;
 
   //Transform information
   PVector position;
@@ -29,10 +24,6 @@ class Frog {
     this.road = road;
     brain = new NeuralNet(4, 10, 5);
 
-    upFrog = loadImage("UpFrog.png");
-    leftFrog = loadImage("LeftFrog.png");
-    downFrog = loadImage("DownFrog.png");
-    rightFrog = loadImage("RightFrog.png");
     img = upFrog;
 
     spawnPosition = new PVector((width / 2) - (road.rowHeight / 2), 0);
