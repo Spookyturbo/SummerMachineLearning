@@ -1,14 +1,15 @@
-//Road road;
 Population population;
+float mutationRate = 0.1f;
+boolean genetic = true;
 boolean playerControlled = false;
 int ticksPerUpdate = 5;
 Frog playerFrog;
 
 void setup() {
-  size(600, 800);
+  size(650, 800);
   background(51);
   loadAllImages();
-  population = new Population(1000);
+  population = new Population(100);
   playerFrog = population.frogs[0];
 }
 
@@ -17,6 +18,10 @@ void draw() {
   if (!playerControlled) {
     if (population.isAlive()) {
       population.updateAlive();
+    }
+    else {
+     population.calculateFitness();
+     population.naturalSelection();
     }
   } else {
     playerFrog.road.update();

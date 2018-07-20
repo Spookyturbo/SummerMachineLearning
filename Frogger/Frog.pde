@@ -10,7 +10,10 @@ class Frog {
   float[] vision = new float[4]; //up, right, down, left
   boolean alive = true;
   float fitness;
-  
+  //Used to keep the frogs from getting stuck in a loop and never dieing
+  int maxTicks = 50;
+  int currentTicks = 0;
+
   PImage img;
 
   //Transform information
@@ -35,14 +38,14 @@ class Frog {
   }
 
   public void update() {
-    if (road.checkCollisions(position, size) || position.y > road.rowHeight * road.rows.size()) {
+    if (road.checkCollisions(position, size) || position.y > road.rowHeight * road.rows.size() || currentTicks > maxTicks) {
       alive = false;
     }
   }
 
   public void updateAI() {
     look();
-    think();
+    think(genetic);
     update();
   }
 
@@ -57,18 +60,24 @@ class Frog {
   }
 
   public void moveLeft() {
-    img = leftFrog;
-    position.x -= size.x;
+    if (position.x > 0) {
+      img = leftFrog;
+      position.x -= size.x;
+    }
   }
 
   public void moveRight() {
-    img = rightFrog;
-    position.x += size.x;
+    if (position.x < width - size.x) {
+      img = rightFrog;
+      position.x += size.x;
+    }
   }
 
   public void moveDown() {
-    img = downFrog;
-    position.y -= size.x;
+    if (position.y > 0) {
+      img = downFrog;
+      position.y -= size.x;
+    }
   }
 
   //only checks for collision when simulating the movements up, right, down, and left
@@ -78,30 +87,35 @@ class Frog {
     vision[0] = (road.checkCollisions(tmpPosition, size)) ? 1 : 0;
     tmpPosition = position.copy();
     tmpPosition.x += size.x;
-    vision[1] = (road.checkCollisions(tmpPosition, size)) ? 1 : 0;
+    vision[1] = (road.checkCollisions(tmpPosition, size) || tmpPosition.x >= width) ? 1 : 0;
     tmpPosition = position.copy();
     tmpPosition.y -= size.y;
-    vision[2] = (road.checkCollisions(tmpPosition, size)) ? 1 : 0;
+    vision[2] = (road.checkCollisions(tmpPosition, size) || tmpPosition.y < 0) ? 1 : 0;
     tmpPosition = position.copy();
     tmpPosition.x -= size.x;
-    vision[3] = (road.checkCollisions(tmpPosition, size)) ? 1 : 0;
+    vision[3] = (road.checkCollisions(tmpPosition, size) || tmpPosition.x < 0) ? 1 : 0;
   }
 
   long lastTick = -10;
-  public void think() {
+  public void think(boolean genetic) {
     //Makes it not able to move as fast as it wants
     if (road.gameTick - lastTick >= ticksPerUpdate) {
+      currentTicks++;
       lastTick = road.gameTick;
       float[] inputs = getInputs();
 
-      //up, right, down, left
-      float[] desiredOutputs = new float[5];
-      desiredOutputs[0] = (inputs[0] == 0) ? 1 : 0;
-      desiredOutputs[1] = (inputs[3] == 1) ? 1 : 0;
-      desiredOutputs[2] = 0;
-      desiredOutputs[3] = (inputs[1] == 1) ? 1 : 0;
-      desiredOutputs[4] = (inputs[0] == 1 && inputs[1] == 0 && inputs[3] == 0) ? 1 : 0;
-      brain.train(inputs, desiredOutputs);
+      //Only run if not using the genetic algorithm
+      if (!genetic) {
+        //up, right, down, left
+        float[] desiredOutputs = new float[5];
+        desiredOutputs[0] = (inputs[0] == 0) ? 1 : 0;
+        desiredOutputs[1] = (inputs[3] == 1) ? 1 : 0;
+        desiredOutputs[2] = 0;
+        desiredOutputs[3] = (inputs[1] == 1) ? 1 : 0;
+        desiredOutputs[4] = (inputs[0] == 1 && inputs[1] == 0 && inputs[3] == 0) ? 1 : 0;
+        brain.train(inputs, desiredOutputs);
+      }
+
       float[] outputs = brain.output(inputs);
       int greatestIndex = 0;
       for (int i = 0; i < outputs.length; i++) {
@@ -149,6 +163,8 @@ class Frog {
 
   public void calculateFitness() {
     fitness = score;
+    //ensure the fitness is atleast 1
+    fitness++;
   }
 
   public void setAlive(boolean value) {
