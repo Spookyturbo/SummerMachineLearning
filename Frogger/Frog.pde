@@ -10,6 +10,7 @@ class Frog {
   float[] vision = new float[4]; //up, right, down, left
   boolean alive = true;
   float fitness;
+  long timeBorn;
   //Used to keep the frogs from getting stuck in a loop and never dieing
   int maxTicks = 50;
   int currentTicks = 0;
@@ -35,10 +36,12 @@ class Frog {
 
     //For determining if visiting a new row for the first time
     maxYPosition = position.y;
+    //For helping with the fitness
+    timeBorn = millis();
   }
 
   public void update() {
-    if (road.checkCollisions(position, size) || position.y > road.rowHeight * road.rows.size() || currentTicks > maxTicks) {
+    if (road.checkCollisions(position, size) || position.y > road.rowHeight * road.rows.size() || (currentTicks > maxTicks && genetic)) {
       alive = false;
     }
   }
@@ -163,6 +166,7 @@ class Frog {
 
   public void calculateFitness() {
     fitness = score;
+    fitness += ((millis() - timeBorn) / 1000) * ((millis() - timeBorn) / 1000);
     //ensure the fitness is atleast 1
     fitness++;
   }

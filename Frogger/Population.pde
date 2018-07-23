@@ -3,7 +3,9 @@ class Population {
   Road road;
   Frog[] frogs;
   Frog bestFrog;
-  int generation = 0;
+  Frog bestFrogEver;
+  float bestFitnessEver;
+  int generation;
 
   public Population(int populationSize) {
     road = new Road(height/50 - 2, 2);
@@ -15,6 +17,10 @@ class Population {
 
     //Initiliazed to any frog
     bestFrog = frogs[0];
+    bestFrogEver = frogs[0];
+    bestFitnessEver = 0;
+
+    generation = 1;
   }
 
   public void updateAlive() {
@@ -23,7 +29,9 @@ class Population {
     for (Frog frog : frogs) {
       if (frog.alive) {
         frog.updateAI();
-        //frog.show();
+        if (!showBest) {
+          frog.show();
+        }
       }
     }
 
@@ -42,6 +50,12 @@ class Population {
   //Not going to change frogs, only change their brains and reset them
   public void naturalSelection() {
     bestFrog = getBestFrog();
+
+    if (bestFrog.fitness > bestFitnessEver) {
+      bestFrogEver = bestFrog;
+      bestFitnessEver = bestFrogEver.fitness;
+    }
+
     Frog[] newFrogs = new Frog[frogs.length];
 
     for (int i = 0; i < frogs.length; i++) {
@@ -54,10 +68,12 @@ class Population {
       newFrog.brain.mutate(mutationRate);
       newFrogs[i] = newFrog;
     }
-    //ensure the best lives on
+    //ensure the best lives on and keep reference through generations
     newFrogs[0].brain = bestFrog.brain.clone();
     bestFrog = newFrogs[0];
-    
+    newFrogs[1].brain = bestFrogEver.brain.clone();
+    bestFrogEver = newFrogs[1];
+
     frogs = newFrogs;
     generation++;
   }
@@ -103,5 +119,11 @@ class Population {
     fill(255, 255, 255);
     textSize(32);
     text(generation, width - 32, 32);
+  }
+
+  public void resetFrogs() {
+    for (Frog frog : frogs) {
+      frog.reset();
+    }
   }
 }
