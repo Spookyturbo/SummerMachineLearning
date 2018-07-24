@@ -13,7 +13,7 @@ void setup() {
   size(550, 600);
   background(51);
   loadAllImages();
-  population = new Population(1);
+  population = new Population((genetic) ? 100 : 1);
   playerFrog = population.frogs[0];
   frameRate(framesPerSecond);
 }

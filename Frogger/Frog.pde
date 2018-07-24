@@ -3,6 +3,7 @@ class Frog {
 
   //Score Reqs
   int score = 0;
+  int totalMoves = 0;
   float maxYPosition;
 
   //Ai Reqs
@@ -13,7 +14,7 @@ class Frog {
   long timeBorn;
   //Used to keep the frogs from getting stuck in a loop and never dieing
   int maxTicks = 50;
-  int currentTicks = 0;
+  int ticksSinceLastMove = 0;
 
   PImage img;
 
@@ -41,7 +42,7 @@ class Frog {
   }
 
   public void update() {
-    if (road.checkCollisions(position, size) || position.y > road.rowHeight * road.rows.size() || (currentTicks > maxTicks && genetic)) {
+    if (road.checkCollisions(position, size) || position.y > road.rowHeight * road.rows.size() || (ticksSinceLastMove > maxTicks && genetic)) {
       alive = false;
     }
   }
@@ -59,6 +60,8 @@ class Frog {
     if (position.y > maxYPosition) {
       maxYPosition = position.y;
       score += 10;
+    } else {
+      ticksSinceLastMove++;
     }
   }
 
@@ -67,6 +70,7 @@ class Frog {
       img = leftFrog;
       position.x -= size.x;
     }
+    ticksSinceLastMove++;
   }
 
   public void moveRight() {
@@ -74,12 +78,15 @@ class Frog {
       img = rightFrog;
       position.x += size.x;
     }
+    ticksSinceLastMove++;
   }
 
   public void moveDown() {
     if (position.y > 0) {
       img = downFrog;
       position.y -= size.x;
+    } else {
+      ticksSinceLastMove++;
     }
   }
 
@@ -103,7 +110,7 @@ class Frog {
   public void think(boolean genetic) {
     //Makes it not able to move as fast as it wants
     if (road.gameTick - lastTick >= ticksPerUpdate) {
-      currentTicks++;
+      totalMoves++;
       lastTick = road.gameTick;
       float[] inputs = getInputs();
 
@@ -141,6 +148,7 @@ class Frog {
         moveLeft();
         break;
       case 4:
+        ticksSinceLastMove++;
         //do nothing
         break;
       }
@@ -165,8 +173,9 @@ class Frog {
   }
 
   public void calculateFitness() {
-    fitness = score;
-    fitness += ((millis() - timeBorn) / 1000) * ((millis() - timeBorn) / 1000);
+    fitness = score * score;
+    fitness += ((millis() - timeBorn) / 1000);
+    fitness -= totalMoves * totalMoves;
     //ensure the fitness is atleast 1
     fitness++;
   }
@@ -176,6 +185,7 @@ class Frog {
   }
 
   public void reset() {
+    totalMoves = 0;
     score = 0;
     fitness = 0;
     maxYPosition = spawnPosition.y;
